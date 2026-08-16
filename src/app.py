@@ -89,11 +89,13 @@ def get_one_planet(planet_id):
         return jsonify({"msj": "Planeta no encontrado"}), 404
     return jsonify(planeta.serialize()), 200
 
+
 @app.route('/users', methods=['GET'])
 def get_all_users():
     todos_los_usuarios = User.query.all()
     resultado = [usuario.serialize() for usuario in todos_los_usuarios]
     return jsonify(resultado), 200
+
 
 @app.route('/users/favorites', methods=['GET'])
 def get_user_favorites():
@@ -103,3 +105,56 @@ def get_user_favorites():
     resultado = [favorito.serialize() for favorito in favoritos]
 
     return jsonify(resultado), 200
+
+
+@app.route('/favorite/people/<int:people_id>', methods=['POST'])
+def add_favorite_people(people_id):
+    user_id = 1
+
+    nuevo_favorito = Favorite(user_id=user_id, people_id=people_id)
+    db.session.add(nuevo_favorito)
+    db.session.commit()
+
+    return jsonify(nuevo_favorito.serialize()), 201
+
+
+@app.route('/favorite/planet/<int:planet_id>', methods=['POST'])
+def add_favorite_planet(planet_id):
+    user_id = 1
+
+    nuevo_favorito = Favorite(user_id=user_id, planet_id=planet_id)
+    db.session.add(nuevo_favorito)
+    db.session.commit()
+
+    return jsonify(nuevo_favorito.serialize()), 201
+
+
+@app.route('/favorite/people/<int:people_id>', methods=['DELETE'])
+def delete_favorite_people(people_id):
+    user_id = 1
+
+    favorito_a_eliminar = Favorite.query.filter_by(
+        user_id=user_id, people_id=people_id).first()
+
+    if favorito_a_eliminar is None:
+        return jsonify({"msg": "Favorito no encontrado"}), 404
+    else:
+        db.session.delete(favorito_a_eliminar)
+        db.session.commit()
+        return jsonify({"msg": "Favorito eliminado correctamente"}), 200
+
+
+@app.route('/favorite/planet/<int:planet_id>', methods=['DELETE'])
+def delete_favorite_planet(planet_id):
+    user_id = 1
+
+    favorito_a_eliminar = Favorite.query.filter_by(
+        user_id=user_id, planet_id=planet_id).first()
+
+    if favorito_a_eliminar is None:
+        return jsonify({"msg": "Favorito no encontrado"}), 404
+    else:
+        db.session.delete(favorito_a_eliminar)
+        db.session.commit()
+        return jsonify({"msg": "Favorito eliminado correctamente"}), 200
+    
