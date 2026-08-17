@@ -57,6 +57,8 @@ if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
     app.run(host='0.0.0.0', port=PORT, debug=False)
 
+#ESTA RUTA ME TRAE LOS PERSONAJES DE STARWARS
+
 
 @app.route('/people', methods=['GET'])
 def get_all_people():
